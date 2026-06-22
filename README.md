@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CineStream Next.js Migration
 
-## Getting Started
+## Project Overview
 
-First, run the development server:
+CineStream is a movie discovery application built using Next.js 15 and TMDB API.
+
+This project is an upgrade of the previous React SPA version. The application now utilizes Server-Side Rendering (SSR), App Router, dynamic routing, and metadata generation for improved SEO and performance.
+
+---
+
+## Features
+
+### Popular Movies
+
+* Fetches popular movies from TMDB
+* Initial data rendered on the server
+* Responsive movie card layout
+
+### Movie Search
+
+* Search movies by title
+* Debounced search requests
+* Displays "No movies found" when results are unavailable
+
+### Movie Details
+
+* Dynamic route using `/movie/[id]`
+* Displays poster, overview, release date, runtime, and rating
+* SEO metadata generated dynamically
+
+### Favorites
+
+* Add and remove favorite movies
+* Favorites stored in localStorage
+* Favorites page with count in navbar
+* Favorites persist after refresh
+
+### Infinite Scroll
+
+* Automatically loads additional popular movies while scrolling
+* Prevents duplicate movie entries
+
+---
+
+## Technologies Used
+
+* Next.js 15
+* React
+* TMDB API
+* Context API
+* CSS
+* App Router
+
+---
+
+## Routing Structure
+
+* `/` → Home Page
+* `/favorites` → Favorites Page
+* `/movie/[id]` → Movie Details Page
+
+---
+
+## Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build production version:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Environment Variable
 
-To learn more about Next.js, take a look at the following resources:
+Create `.env.local`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+TMDB_KEY=YOUR_TMDB_API_KEY
+```
