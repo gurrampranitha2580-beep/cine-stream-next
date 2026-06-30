@@ -1,40 +1,41 @@
 "use client";
 
-import { useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 import { IMAGE_BASE_URL } from "../lib/tmdb";
-import { FavoritesContext } from "../context/FavoritesContext";
+import { toggleFavorite } from "../store/slices/favoritesSlice";
 
 export default function MovieCard({ movie }) {
+  const dispatch = useDispatch();
+
+  const favorites = useSelector((state) => state.favorites.favorites);
   
-  const { addToFavorites, isFavorite, loaded } = useContext(FavoritesContext);
+  console.log("Redux Favorites:", favorites);
 
   let posterUrl = null;
 
-  if(movie.poster_path){
+  if (movie.poster_path) {
     posterUrl = `${IMAGE_BASE_URL}${movie.poster_path}`;
   }
 
   let releaseYear = "N/A";
 
-  if(movie.release_date){
+  if (movie.release_date) {
     releaseYear = movie.release_date.split("-")[0];
   }
 
-  
-  const favoriteStatus = loaded && isFavorite(movie.id);
+  const favoriteStatus = favorites.some((item) => item.id === movie.id);
 
   function handleFavoriteClick(event) {
     event.preventDefault();
-    addToFavorites(movie);
+    dispatch(toggleFavorite(movie));
   }
 
-  return(
+  return (
     <Link href={`/movie/${movie.id}`} className="movie-card">
-
       <button
         className="heart-btn"
         onClick={handleFavoriteClick}
@@ -43,19 +44,17 @@ export default function MovieCard({ movie }) {
         {favoriteStatus ? <FaHeart /> : <FaRegHeart />}
       </button>
 
-      {
-        posterUrl ? (
-          <img
-            src={posterUrl}
-            alt={movie.title}
-            loading="lazy"
-          />
-        ) : (
-          <div className="no-poster">
-            No Image
-          </div>
-        )
-      }
+      {posterUrl ? (
+        <img
+          src={posterUrl}
+          alt={movie.title}
+          loading="lazy"
+        />
+      ) : (
+        <div className="no-poster">
+          No Image
+        </div>
+      )}
 
       <div className="movie-info">
         <h2>{movie.title}</h2>
@@ -65,7 +64,6 @@ export default function MovieCard({ movie }) {
           <span>⭐ {movie.vote_average.toFixed(1)}</span>
         </div>
       </div>
-
     </Link>
   );
 }

@@ -1,6 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect,useMemo, useRef, useState } from "react";
+
+import { useSelector } from "react-redux";
+
+import FilterSidebar from "./FilterSidebar";
 
 import MovieCard from "./MovieCard";
 
@@ -17,6 +21,7 @@ export default function SearchSection({ popularMovies }) {
   const [hasMore, setHasMore] = useState(true);
 
   const loaderRef = useRef(null);
+  const { genre, year } = useSelector((state) => state.filters);
 
   const isSearchActive = searchText.trim() !== "";
 
@@ -129,6 +134,22 @@ export default function SearchSection({ popularMovies }) {
   }
 
   const moviesToShow = isSearchActive ? searchedMovies : visibleMovies;
+  
+  const filteredMovies = useMemo(() => {
+    return moviesToShow.filter((movie) => {
+      let matchesGenre = true;
+      let matchesYear = true;
+      if (genre !== 0) {
+        matchesGenre = movie.genre_ids?.includes(genre);
+      }
+      if (year !== "all") {
+        matchesYear =
+        movie.release_date &&
+        movie.release_date.startsWith(year);
+      }
+      return matchesGenre && matchesYear;
+    });
+  }, [moviesToShow, genre, year]);
 
   return(
     <section className="search-section">
@@ -140,29 +161,47 @@ export default function SearchSection({ popularMovies }) {
         onChange={handleSearchChange}
         suppressHydrationWarning
       />
+      <div className="movies-layout">
 
-      {loading && (
-        <p className="search-status">
-          Searching...
-        </p>
-      )}
+  <FilterSidebar />
 
-      {isSearchActive && hasSearched && !loading && searchedMovies.length === 0 && (
+  <div className="movies-content">
+
+    {loading && (
+      <p className="search-status">
+        Searching...
+      </p>
+    )}
+
+    {isSearchActive &&
+      hasSearched &&
+      !loading &&
+      searchedMovies.length === 0 && (
         <p className="empty-text">
           No movies found.
         </p>
       )}
 
-      {moviesToShow.length > 0 && (
-        <div className={isSearchActive ? "movies-grid compact-grid" : "movies-grid"}>
-          {moviesToShow.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-            />
-          ))}
-        </div>
-      )}
+    {filteredMovies.length > 0 && (
+      <div
+        className={
+          isSearchActive
+            ? "movies-grid compact-grid"
+            : "movies-grid"
+        }
+      >
+        {filteredMovies.map((movie) => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+          />
+        ))}
+      </div>
+    )}
+
+  </div>
+
+</div>
 
       {!isSearchActive && hasMore && (
         <div ref={loaderRef} className="scroll-loader">

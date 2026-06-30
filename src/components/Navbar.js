@@ -1,31 +1,24 @@
 "use client";
 
-import { useContext } from "react";
 import Link from "next/link";
-
-import { FavoritesContext } from "../context/FavoritesContext";
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
-  
-  const { favorites, loaded } = useContext(FavoritesContext);
+  const favorites = useSelector((state) => state.favorites.favorites);
 
-  return(
+  return (
     <nav className="navbar">
-
       <h1>CineStream</h1>
 
       <div className="nav-links">
         <Link href="/">Home</Link>
 
-        
-        <Link href="/favorites" suppressHydrationWarning>
-          {loaded && favorites.length > 0
+        <Link href="/favorites">
+          {favorites.length > 0
             ? `Favorites (${favorites.length})`
-            : "Favorites"
-          }
+            : "Favorites"}
         </Link>
       </div>
-
     </nav>
   );
 }

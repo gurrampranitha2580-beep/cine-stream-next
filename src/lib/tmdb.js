@@ -53,3 +53,8 @@ export async function searchMovies(query) {
 
   return fetchFromTmdb(url);
 }
+export async function getGenres() {
+  const url = `${BASE_URL}/genre/movie/list?api_key=${API_KEY}`;
+
+  return fetchFromTmdb(url);
+}
